@@ -1,4 +1,4 @@
-package com.example.reservation.board.model;
+package com.reservation.board.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
