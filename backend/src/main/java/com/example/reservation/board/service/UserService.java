@@ -17,8 +17,8 @@ public class UserService {
   @PostConstruct
   public void init() {
     User user = new User();
-    user.setUsername("testuser1");
-    user.setPassword("password123");
+    user.setUsername("testuser6");
+    user.setPassword("password1231");
 
     userRepository.save(user);
   }
