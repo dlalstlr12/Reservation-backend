@@ -14,7 +14,10 @@ public class UserService {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
   }
-
+  public User getUserByUsername(String username) {
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new IllegalStateException("User not found"));
+  }
   public User registerUser(User user) {
     if (userRepository.findByUsername(user.getUsername()).isPresent()) {
       throw new IllegalStateException("Username already exists!");
