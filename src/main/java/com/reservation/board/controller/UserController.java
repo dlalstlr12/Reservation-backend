@@ -56,8 +56,8 @@ public class UserController {
     if (token.isEmpty()) {
       throw new IllegalStateException("Token is missing");
     }
-    // JWT 검증 및 사용자 정보 반환
-    String username = jwtUtil.validateToken(token);
-    return userService.getUserByUsername(username);
+
+    String username = jwtUtil.validateToken(token); // JWT 검증
+    return userService.getUserByUsername(username); // 사용자 정보 반환
   }
 }
