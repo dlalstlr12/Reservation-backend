@@ -18,7 +18,10 @@ public class UserController {
     this.userService = userService;
     this.jwtUtil = jwtUtil;
   }
-
+  @PostMapping("/register")
+  public User registerUser(@RequestBody User user) {
+    return userService.registerUser(user);
+  }
   @PostMapping("/login")
   public String loginUser(@RequestBody User user, HttpServletResponse response) {
     User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword());
