@@ -26,12 +26,12 @@ public class Subscription {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
+  @ManyToOne(fetch = FetchType.EAGER)  // LAZY에서 EAGER로 변경
+  @JoinColumn(name = "user_id")
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "pricing_plan_id", nullable = false)
+  @ManyToOne(fetch = FetchType.EAGER)  // LAZY에서 EAGER로 변경
+  @JoinColumn(name = "pricing_plan_id")
   private PricingPlan pricingPlan;
 
   @Column(name = "start_date")

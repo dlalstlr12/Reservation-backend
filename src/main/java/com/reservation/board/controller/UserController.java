@@ -60,15 +60,15 @@ public class UserController {
   }
 
   @PostMapping("/logout")
-  public String logout(HttpServletResponse response) {
-    // HttpOnly 쿠키를 빈 값으로 설정하고 만료 시간 0으로 설정
-    Cookie cookie = new Cookie("jwt", "");
-    cookie.setHttpOnly(true);
+  public ResponseEntity<?> logout(HttpServletResponse response) {
+    // userId 쿠키 삭제
+    Cookie cookie = new Cookie("userId", null);
     cookie.setPath("/");
     cookie.setMaxAge(0); // 즉시 만료
+    cookie.setHttpOnly(true);
     response.addCookie(cookie);
 
-    return "Logged out successfully";
+    return ResponseEntity.ok().body(Map.of("message", "로그아웃 되었습니다."));
   }
 
   @GetMapping("/profile")
