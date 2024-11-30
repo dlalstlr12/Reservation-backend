@@ -1,11 +1,21 @@
 package com.reservation.board.controller;
 
+import com.reservation.board.dto.ErrorResponse;
+import com.reservation.board.dto.LoginRequest;
 import com.reservation.board.model.User;
 import com.reservation.board.service.UserService;
 import com.reservation.util.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,21 +32,31 @@ public class UserController {
   public User registerUser(@RequestBody User user) {
     return userService.registerUser(user);
   }
+
   @PostMapping("/login")
-  public String loginUser(@RequestBody User user, HttpServletResponse response) {
-    User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword());
+  public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    try {
+      // 로그인 처리
+      User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
-    // JWT 생성
-    String token = jwtUtil.generateToken(loggedInUser.getUsername());
+      // 쿠키 생성
+      Cookie userIdCookie = new Cookie("userId", String.valueOf(user.getId()));
+      userIdCookie.setPath("/");
+      userIdCookie.setMaxAge(24 * 60 * 60); // 24시간
+      userIdCookie.setHttpOnly(true);
+      response.addCookie(userIdCookie);
 
-    // HttpOnly 쿠키 설정
-    Cookie cookie = new Cookie("jwt", token);
-    cookie.setHttpOnly(true); // HttpOnly 설정
-    cookie.setPath("/");
-    cookie.setMaxAge(60 * 60); // 1시간
-    response.addCookie(cookie);
+      // 로그인 성공 응답
+      Map<String, Object> responseData = new HashMap<>();
+      responseData.put("id", user.getId());
+      responseData.put("username", user.getUsername());
+      responseData.put("message", "로그인 성공");
 
-    return "Login successful";
+      return ResponseEntity.ok(responseData);
+
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
   }
 
   @PostMapping("/logout")

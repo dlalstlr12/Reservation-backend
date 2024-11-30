@@ -1,6 +1,14 @@
 package com.reservation.board.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,11 +27,11 @@ public class Subscription {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "pricing_plan_id")
+  @JoinColumn(name = "pricing_plan_id", nullable = false)
   private PricingPlan pricingPlan;
 
   @Column(name = "start_date")
@@ -32,5 +40,9 @@ public class Subscription {
   @Column(name = "end_date")
   private LocalDateTime endDate;
 
-  private boolean active;
+  @Column(name = "duration")
+  private Integer duration;
+
+  @Column(name = "active")
+  private boolean active = true;
 }

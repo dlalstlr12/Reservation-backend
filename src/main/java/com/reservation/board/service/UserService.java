@@ -26,13 +26,15 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public User loginUser(String username, String password) {
+
+  public User login(String username, String password) {
     User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new IllegalStateException("Invalid username or password!"));
+        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
     if (!passwordEncoder.matches(password, user.getPassword())) {
-      throw new IllegalStateException("Invalid username or password!");
+      throw new RuntimeException("비밀번호가 일치하지 않습니다.");
     }
+
     return user;
   }
 }
