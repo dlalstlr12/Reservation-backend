@@ -8,6 +8,7 @@ import com.reservation.board.service.OttService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,18 +23,35 @@ import org.springframework.web.bind.annotation.RestController;
 public class OttController {
   private final OttService ottService;
 
-  @PostMapping
-  public ResponseEntity<Ott> createOtt(@RequestBody Ott ott) {
+  @PostMapping(
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public ResponseEntity<Ott> createOtt(@RequestBody OttDto ottDto) {  // Ott 대신 OttDto 사용
+    Ott ott = new Ott();
+    ott.setName(ottDto.getName());
+    ott.setDescription(ottDto.getDescription());
     return ResponseEntity.ok(ottService.createOtt(ott));
   }
 
-  @GetMapping
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<OttDto>> getAllOtts() {
     List<Ott> otts = ottService.getAllOtts();
     List<OttDto> ottDtos = otts.stream()
         .map(this::convertToDto)
         .collect(Collectors.toList());
     return ResponseEntity.ok(ottDtos);
+  }
+
+  @PostMapping(
+      value = "/{ottId}/pricing-plan",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public ResponseEntity<PricingPlan> addPricingPlan(
+      @PathVariable Long ottId,
+      @RequestBody PricingPlanDto pricingPlanDto) {
+    return ResponseEntity.ok(ottService.addPricingPlan(ottId, pricingPlanDto));
   }
 
   private OttDto convertToDto(Ott ott) {
@@ -55,12 +73,5 @@ public class OttController {
 
     dto.setPricingPlans(planDtos);
     return dto;
-  }
-
-  @PostMapping("/{ottId}/pricing-plan")  // URL 패턴 확인
-  public ResponseEntity<PricingPlan> addPricingPlan(
-      @PathVariable Long ottId,
-      @RequestBody PricingPlanDto pricingPlanDto) {  // DTO 사용
-    return ResponseEntity.ok(ottService.addPricingPlan(ottId, pricingPlanDto));
   }
 }

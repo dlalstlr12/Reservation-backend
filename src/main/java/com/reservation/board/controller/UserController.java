@@ -46,10 +46,18 @@ public class UserController {
       userIdCookie.setHttpOnly(true);
       response.addCookie(userIdCookie);
 
-      // 로그인 성공 응답
+      // role 정보를 포함한 쿠키 생성
+      Cookie userRoleCookie = new Cookie("userRole", user.getRole());
+      userRoleCookie.setPath("/");
+      userRoleCookie.setMaxAge(24 * 60 * 60);
+      userRoleCookie.setHttpOnly(true);
+      response.addCookie(userRoleCookie);
+
+      // 로그인 성공 응답에 role 정보 추가
       Map<String, Object> responseData = new HashMap<>();
       responseData.put("id", user.getId());
       responseData.put("username", user.getUsername());
+      responseData.put("role", user.getRole());  // role 정보 추가
       responseData.put("message", "로그인 성공");
 
       return ResponseEntity.ok(responseData);
@@ -62,11 +70,18 @@ public class UserController {
   @PostMapping("/logout")
   public ResponseEntity<?> logout(HttpServletResponse response) {
     // userId 쿠키 삭제
-    Cookie cookie = new Cookie("userId", null);
-    cookie.setPath("/");
-    cookie.setMaxAge(0); // 즉시 만료
-    cookie.setHttpOnly(true);
-    response.addCookie(cookie);
+    Cookie userIdCookie = new Cookie("userId", null);
+    userIdCookie.setPath("/");
+    userIdCookie.setMaxAge(0);
+    userIdCookie.setHttpOnly(true);
+    response.addCookie(userIdCookie);
+
+    // userRole 쿠키도 삭제
+    Cookie userRoleCookie = new Cookie("userRole", null);
+    userRoleCookie.setPath("/");
+    userRoleCookie.setMaxAge(0);
+    userRoleCookie.setHttpOnly(true);
+    response.addCookie(userRoleCookie);
 
     return ResponseEntity.ok().body(Map.of("message", "로그아웃 되었습니다."));
   }
