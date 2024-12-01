@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -98,6 +99,24 @@ public class OttController {
     } catch (Exception e) {
       return ResponseEntity.badRequest()
           .body(new ErrorResponse("요금제 삭제 실패: " + e.getMessage()));
+    }
+  }
+
+  @PutMapping(
+      value = "/{ottId}",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public ResponseEntity<?> updateOtt(
+      @PathVariable Long ottId,
+      @RequestBody OttDto ottDto
+  ) {
+    try {
+      Ott updatedOtt = ottService.updateOtt(ottId, ottDto);
+      return ResponseEntity.ok(convertToDto(updatedOtt));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ErrorResponse("OTT 수정 실패: " + e.getMessage()));
     }
   }
 }

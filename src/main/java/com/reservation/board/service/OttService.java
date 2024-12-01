@@ -1,5 +1,6 @@
 package com.reservation.board.service;
 
+import com.reservation.board.dto.OttDto;
 import com.reservation.board.dto.PricingPlanDto;
 import com.reservation.board.model.Ott;
 import com.reservation.board.model.PricingPlan;
@@ -78,5 +79,21 @@ public class OttService {
     } catch (Exception e) {
       throw new RuntimeException("Failed to delete OTT: " + e.getMessage());
     }
+  }
+  public Ott updateOtt(Long ottId, OttDto ottDto) {
+    Ott ott = ottRepository.findById(ottId)
+        .orElseThrow(() -> new RuntimeException("OTT를 찾을 수 없습니다. ID: " + ottId));
+
+    // 이름 중복 체크 (자신의 이름은 제외)
+    if (!ott.getName().equals(ottDto.getName()) &&
+        ottRepository.existsByName(ottDto.getName())) {
+      throw new RuntimeException("이미 존재하는 OTT 서비스 이름입니다.");
+    }
+
+    // 값 업데이트
+    ott.setName(ottDto.getName());
+    ott.setDescription(ottDto.getDescription());
+
+    return ottRepository.save(ott);
   }
 }

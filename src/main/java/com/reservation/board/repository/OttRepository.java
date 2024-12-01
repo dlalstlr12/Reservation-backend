@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OttRepository extends JpaRepository<Ott, Long> {
   Optional<Ott> findByName(String name);
+  boolean existsByName(String name);
 }
