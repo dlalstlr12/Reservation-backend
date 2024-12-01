@@ -1,5 +1,6 @@
 package com.reservation.board.controller;
 
+import com.reservation.board.dto.ErrorResponse;
 import com.reservation.board.dto.OttDto;
 import com.reservation.board.dto.PricingPlanDto;
 import com.reservation.board.model.Ott;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,5 +75,29 @@ public class OttController {
 
     dto.setPricingPlans(planDtos);
     return dto;
+  }
+  @DeleteMapping("/{ottId}")
+  public ResponseEntity<?> deleteOtt(@PathVariable Long ottId) {
+    try {
+      ottService.deleteOtt(ottId);
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ErrorResponse("OTT 삭제 실패: " + e.getMessage()));
+    }
+  }
+
+  @DeleteMapping("/{ottId}/pricing-plan/{planId}")
+  public ResponseEntity<?> deletePricingPlan(
+      @PathVariable Long ottId,
+      @PathVariable Long planId
+  ) {
+    try {
+      ottService.deletePricingPlan(ottId, planId);
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ErrorResponse("요금제 삭제 실패: " + e.getMessage()));
+    }
   }
 }
