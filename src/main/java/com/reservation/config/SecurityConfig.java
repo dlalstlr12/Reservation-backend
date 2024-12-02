@@ -24,14 +24,17 @@ public class SecurityConfig {
         .cors() // CORS 설정 활성화
         .and()
         .authorizeHttpRequests()
+        .requestMatchers("/api/users/register").permitAll()
+        .requestMatchers("/api/users/login").permitAll()
+        .requestMatchers("/api/users/check-username/**").permitAll() // 이 줄 추가
         .anyRequest().permitAll(); // 모든 요청 허용 (개발 중)
 
     return http.build();
   }
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
+public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+    configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://frontend:3000"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);
@@ -39,7 +42,7 @@ public class SecurityConfig {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
-  }
+}
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();

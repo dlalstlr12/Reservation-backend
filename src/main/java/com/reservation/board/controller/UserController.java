@@ -57,7 +57,7 @@ public class UserController {
       Map<String, Object> responseData = new HashMap<>();
       responseData.put("id", user.getId());
       responseData.put("username", user.getUsername());
-      responseData.put("role", user.getRole());  // role 정보 추가
+      responseData.put("role", user.getRole());  // role 정보 추가ㅉ
       responseData.put("message", "로그인 성공");
 
       return ResponseEntity.ok(responseData);
