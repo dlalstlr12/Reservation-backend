@@ -1,0 +1,11 @@
+   .git
+   .gitignore
+   *.md
+   /build
+   /out
+   /target
+   /gradle
+   /gradlew
+   /gradlew.bat
+   /settings.gradle
+   /gradle/wrapper
